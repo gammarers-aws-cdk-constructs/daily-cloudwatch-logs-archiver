@@ -7,6 +7,9 @@
   "scripts": {
     "build": "projen build",
     "bump": "projen bump",
+    "bundle": "projen bundle",
+    "bundle:funcs/log-archive.lambda": "projen bundle:funcs/log-archive.lambda",
+    "bundle:funcs/log-archive.lambda:watch": "projen bundle:funcs/log-archive.lambda:watch",
     "clobber": "projen clobber",
     "compat": "projen compat",
     "compile": "projen compile",
@@ -34,14 +37,22 @@
     "organization": false
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3",
+    "@aws-sdk/client-resource-groups-tagging-api": "^3",
+    "@aws/durable-execution-sdk-js": "^1",
+    "@gammarers/jest-aws-cdk-asset-filename-renamer": "~0.5.8",
     "@stylistic/eslint-plugin": "^2",
+    "@types/aws-lambda": "^8",
     "@types/jest": "^30.0.0",
-    "@types/node": "ts5.9",
+    "@types/node": "^20",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "aws-cdk-lib": "2.232.0",
+    "aws-sdk-client-mock": "^3",
+    "aws-sdk-client-mock-jest": "^3",
     "commit-and-tag-version": "^12",
     "constructs": "10.5.1",
+    "esbuild": "^0.28.0",
     "eslint": "^9",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
@@ -53,6 +64,7 @@
     "jsii-pacmak": "^1.128.0",
     "jsii-rosetta": "5.9.x",
     "projen": "^0.99.50",
+    "safe-env-getter": "^0.1",
     "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
     "typescript": "5.9.x"
@@ -61,12 +73,19 @@
     "aws-cdk-lib": "^2.232.0",
     "constructs": "^10.5.1"
   },
+  "dependencies": {
+    "@gammarers/aws-secure-log-bucket": "^2.1.19"
+  },
   "keywords": [
     "cdk"
   ],
+  "engines": {
+    "node": ">= 20.0.0"
+  },
   "devEngines": {
     "packageManager": {
-      "name": "npm",
+      "name": "yarn",
+      "version": "1.22.22",
       "onFail": "ignore"
     }
   },

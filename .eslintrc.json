@@ -153,6 +153,7 @@
         "devDependencies": [
           "**/test/**",
           "**/build-tools/**",
+          "src/funcs/log-archive.lambda.ts",
           ".projenrc.ts",
           "projenrc/**/*.ts"
         ],

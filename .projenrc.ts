@@ -1,4 +1,4 @@
-import { awscdk, javascript } from 'projen';
+import { awscdk, javascript, github } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
@@ -7,8 +7,66 @@ const project = new awscdk.AwsCdkConstructLibrary({
   typescriptVersion: '5.9.x',
   jsiiVersion: '5.9.x',
   name: 'daily-cloudwatch-logs-archiver',
-  packageManager: javascript.NodePackageManager.NPM,
+  packageManager: javascript.NodePackageManager.YARN_CLASSIC,
   projenrcTs: true,
   repositoryUrl: 'https://github.com/gammarers-aws-cdk-constructs/daily-cloudwatch-logs-archiver.git',
+  deps: [
+    '@gammarers/aws-secure-log-bucket@^2.1.19',
+  ],
+  devDeps: [
+    '@aws/durable-execution-sdk-js@^1',
+    '@aws-sdk/client-cloudwatch-logs@^3',
+    '@aws-sdk/client-resource-groups-tagging-api@^3',
+    '@types/aws-lambda@^8',
+    '@gammarers/jest-aws-cdk-asset-filename-renamer@~0.5.8',
+    'aws-sdk-client-mock@^3',
+    'aws-sdk-client-mock-jest@^3',
+    'safe-env-getter@^0.1',
+  ],
+  releaseToNpm: true,
+  // npmTrustedPublishing: true,
+  npmAccess: javascript.NpmAccess.PUBLIC,
+  mergify: true,
+  minNodeVersion: '20.0.0',
+  workflowNodeVersion: '24.x',
+  depsUpgradeOptions: {
+    workflowOptions: {
+      labels: ['auto-approve', 'auto-merge'],
+      schedule: javascript.UpgradeDependenciesSchedule.WEEKLY,
+    },
+  },
+  githubOptions: {
+    projenCredentials: github.GithubCredentials.fromApp({
+      permissions: {
+        pullRequests: github.workflows.AppPermission.WRITE,
+        contents: github.workflows.AppPermission.WRITE,
+        workflows: github.workflows.AppPermission.WRITE,
+      },
+    }),
+  },
+  autoApproveOptions: {
+    allowedUsernames: [
+      'gammarers-projen-upgrade-bot[bot]',
+      'yicr',
+    ],
+  },
+  jestOptions: {
+    extraCliOptions: ['--silent'],
+  },
+  tsconfigDev: {
+    compilerOptions: {
+      strict: true,
+    },
+  },
+  lambdaOptions: {
+    // target node.js runtime
+    runtime: awscdk.LambdaRuntime.NODEJS_24_X,
+    bundlingOptions: {
+      // list of node modules to exclude from the bundle
+      externals: ['@aws-sdk/*'],
+      sourcemap: true,
+    },
+  },
 });
+project.addPackageIgnore('/.devcontainer');
 project.synth();
